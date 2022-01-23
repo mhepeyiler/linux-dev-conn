@@ -149,7 +149,7 @@ bool I2CDev::_set_pointer16(uint16_t addr) noexcept {
 bool I2CDev::_write_data(const void* data, std::size_t size) noexcept {
     int ret;
     if ((ret = write(_fd, data, size)) == -1) {
-        LOG_WARN("Unable to write value. Errno value is %d." errno);
+        LOG_WARN("Unable to write value. Errno value is %d.", errno);
         return false;
     }
     if (ret != size) {
