@@ -1,19 +1,19 @@
 #ifndef LINUX_DEV_CONN_SRC_LOGGER_LOGGER_H
 #define LINUX_DEV_CONN_SRC_LOGGER_LOGGER_H
 
-#ifdef LOG
+#if LOG
 
 #include <cstdio>
 #include <sstream>
 #include <iomanip>
 #include <atomic>
 
-#define LOG_TRACE(str, ...) Logger::log("TRACE", FILE, func, LINE, str, ##__VA_ARGS__)
-#define LOG_DEBUG(str, ...) Logger::log("DEBUG", FILE, func, LINE, str, ##__VA_ARGS__)
-#define LOG_INFO(str, ...) Logger::log("INFO", FILE, func, LINE, str, ##__VA_ARGS__)
-#define LOG_WARN(str, ...) Logger::log("WARNING", FILE, func, LINE, str, ##__VA_ARGS__)
-#define LOG_ERROR(str, ...) Logger::log("ERROR", FILE, func, LINE, str, ##__VA_ARGS__)
-#define LOG_FATAl(str, ...) Logger::log("FATAL", FILE, func, LINE, str, ##__VA_ARGS__)
+#define LOG_TRACE(str, ...) Logger::log("TRACE", __FILE__, __func__, __LINE__, str, ##__VA_ARGS__)
+#define LOG_DEBUG(str, ...) Logger::log("DEBUG", __FILE__, __func__, __LINE__, str, ##__VA_ARGS__)
+#define LOG_INFO(str, ...) Logger::log("INFO", __FILE__, __func__, __LINE__, str, ##__VA_ARGS__)
+#define LOG_WARN(str, ...) Logger::log("WARNING", __FILE__, __func__, __LINE__, str, ##__VA_ARGS__)
+#define LOG_ERROR(str, ...) Logger::log("ERROR", __FILE__, __func__, __LINE__, str, ##__VA_ARGS__)
+#define LOG_FATAl(str, ...) Logger::log("FATAL", __FILE__, __func__, __LINE__, str, ##__VA_ARGS__)
 
 struct Logger {
     inline static std::atomic<size_t> logCount{};
@@ -36,7 +36,7 @@ struct Logger {
         ss << " "  << str << '\n';
         printf(ss.str().c_str(), arg...);
     }
-}
+};
 
 #else 
 
