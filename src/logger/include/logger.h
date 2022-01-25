@@ -7,13 +7,16 @@
 #include <sstream>
 #include <iomanip>
 #include <atomic>
+#include <cstring>
 
-#define LOG_TRACE(str, ...) Logger::log("TRACE", __FILE__, __func__, __LINE__, str, ##__VA_ARGS__)
-#define LOG_DEBUG(str, ...) Logger::log("DEBUG", __FILE__, __func__, __LINE__, str, ##__VA_ARGS__)
-#define LOG_INFO(str, ...) Logger::log("INFO", __FILE__, __func__, __LINE__, str, ##__VA_ARGS__)
-#define LOG_WARN(str, ...) Logger::log("WARNING", __FILE__, __func__, __LINE__, str, ##__VA_ARGS__)
-#define LOG_ERROR(str, ...) Logger::log("ERROR", __FILE__, __func__, __LINE__, str, ##__VA_ARGS__)
-#define LOG_FATAl(str, ...) Logger::log("FATAL", __FILE__, __func__, __LINE__, str, ##__VA_ARGS__)
+#define __FILENAME__ (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__)
+
+#define LOG_TRACE(str, ...) Logger::log("TRACE", __FILENAME__, __func__, __LINE__, str, ##__VA_ARGS__)
+#define LOG_DEBUG(str, ...) Logger::log("DEBUG", __FILENAME__, __func__, __LINE__, str, ##__VA_ARGS__)
+#define LOG_INFO(str, ...) Logger::log("INFO", __FILENAME__, __func__, __LINE__, str, ##__VA_ARGS__)
+#define LOG_WARN(str, ...) Logger::log("WARN", __FILENAME__, __func__, __LINE__, str, ##__VA_ARGS__)
+#define LOG_ERROR(str, ...) Logger::log("ERROR", __FILENAME__, __func__, __LINE__, str, ##__VA_ARGS__)
+#define LOG_FATAL(str, ...) Logger::log("FATAL", __FILENAME__, __func__, __LINE__, str, ##__VA_ARGS__)
 
 struct Logger {
     inline static std::atomic<size_t> logCount{};
