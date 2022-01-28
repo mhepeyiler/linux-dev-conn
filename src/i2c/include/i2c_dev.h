@@ -17,10 +17,10 @@ public:
 
     bool send8(uint8_t devAddr, uint8_t addr, const void* data, std::size_t size) noexcept;
     bool send16(uint8_t devAddr, uint16_t addr, const void* data, std::size_t size) noexcept;
-    std::unique_ptr<uint8_t> read8(uint8_t devAddr, uint8_t addr, std::size_t size) noexcept;
-    std::unique_ptr<uint8_t> read16(uint8_t devAddr, uint16_t addr, std::size_t size) noexcept;
-    bool read8(uint8_t devAddr, uint8_t addr, uint8_t* dataBuffer, std::size_t size) noexcept;
-    bool read16(uint8_t devAddr, uint16_t addr, uint8_t* dataBuffer, std::size_t size) noexcept;
+    std::unique_ptr<char> read8(uint8_t devAddr, uint8_t addr, std::size_t size) noexcept;
+    std::unique_ptr<char> read16(uint8_t devAddr, uint16_t addr, std::size_t size) noexcept;
+    bool read8(uint8_t devAddr, uint8_t addr, char* dataBuffer, std::size_t size) noexcept;
+    bool read16(uint8_t devAddr, uint16_t addr, char* dataBuffer, std::size_t size) noexcept;
 
     bool is_initiated() const;
     bool initiate(std::string_view fileName) noexcept;
@@ -31,7 +31,7 @@ private:
     bool _set_pointer8(uint8_t addr) noexcept;
     bool _set_pointer16(uint16_t addr) noexcept;
     bool _write_data(const void* data, std::size_t size) noexcept;
-    bool _read_data(uint8_t* data, std::size_t size) noexcept;
+    bool _read_data(char* data, std::size_t size) noexcept;
     void _sleep()const noexcept;
     std::string_view _fileName;
     int _fd;

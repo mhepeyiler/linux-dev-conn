@@ -54,12 +54,12 @@ bool I2CDev::send16(uint8_t devAddr, uint16_t addr, const void *data, std::size_
     }
 }
 
-std::unique_ptr<uint8_t> I2CDev::read8(uint8_t devAddr, uint8_t addr, std::size_t size) noexcept {
+std::unique_ptr<char> I2CDev::read8(uint8_t devAddr, uint8_t addr, std::size_t size) noexcept {
     if (_set_slave_address(devAddr) && _set_pointer8(addr)) {
         return nullptr;
     }
 
-    std::unique_ptr<uint8_t> alloc{new uint8_t[size]};
+    std::unique_ptr<char> alloc{new char[size]};
     
     if (!_read_data(alloc.get(), size)) {
         return nullptr;
@@ -68,12 +68,12 @@ std::unique_ptr<uint8_t> I2CDev::read8(uint8_t devAddr, uint8_t addr, std::size_
     return alloc;
 }
 
-std::unique_ptr<uint8_t> I2CDev::read16(uint8_t devAddr, uint16_t addr, std::size_t size) noexcept {
+std::unique_ptr<char> I2CDev::read16(uint8_t devAddr, uint16_t addr, std::size_t size) noexcept {
     if (_set_slave_address(devAddr) && _set_pointer16(addr)) {
         return nullptr;
     }
 
-    std::unique_ptr<uint8_t> alloc{new uint8_t[size]};
+    std::unique_ptr<char> alloc{new char[size]};
     
     if (!_read_data(alloc.get(), size)) {
         return nullptr;
@@ -82,7 +82,7 @@ std::unique_ptr<uint8_t> I2CDev::read16(uint8_t devAddr, uint16_t addr, std::siz
     return alloc;
 }
 
-bool I2CDev::read8(uint8_t devAddr, uint8_t addr, uint8_t *dataBuffer, std::size_t size) noexcept {
+bool I2CDev::read8(uint8_t devAddr, uint8_t addr, char *dataBuffer, std::size_t size) noexcept {
     if (_set_slave_address(devAddr) && _set_pointer8(addr) && _read_data(dataBuffer, size)) {
         return false;
     }
@@ -90,7 +90,7 @@ bool I2CDev::read8(uint8_t devAddr, uint8_t addr, uint8_t *dataBuffer, std::size
     return true;
 }
 
-bool I2CDev::read16(uint8_t devAddr, uint16_t addr, uint8_t *dataBuffer, std::size_t size) noexcept {
+bool I2CDev::read16(uint8_t devAddr, uint16_t addr, char *dataBuffer, std::size_t size) noexcept {
     if (_set_slave_address(devAddr) && _set_pointer16(addr) && _read_data(dataBuffer, size)) {
         return false;
     }
@@ -171,7 +171,7 @@ bool I2CDev::_write_data(const void* data, std::size_t size) noexcept {
     return true;
 }
 
-bool I2CDev::_read_data(uint8_t* data, std::size_t size) noexcept {
+bool I2CDev::_read_data(char* data, std::size_t size) noexcept {
     int ret;
     if ((ret = read(_fd, data, size)) == -1) {
         LOG_WARN("Unable to read data. Errno value is %d.", errno);
