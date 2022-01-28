@@ -32,6 +32,7 @@ private:
     bool _set_pointer16(uint16_t addr) noexcept;
     bool _write_data(const void* data, std::size_t size) noexcept;
     bool _read_data(uint8_t* data, std::size_t size) noexcept;
+    void _sleep()const noexcept;
     std::string_view _fileName;
     int _fd;
     uint8_t _lastSlaveAddress;

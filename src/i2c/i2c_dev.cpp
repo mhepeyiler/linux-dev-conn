@@ -5,6 +5,8 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <linux/i2c-dev.h>
+#include <chrono>
+#include <thread>
 
 #include "i2c_dev.h"
 #include "logger.h"
@@ -22,6 +24,7 @@ I2CDev::I2CDev(std::string_view fileName) noexcept : _fileName{fileName},
 
 I2CDev::~I2CDev() {
     close(_fd);
+    LOG_INFO("File %s closed.", _fileName.data());
 }
 
 I2CDev::I2CDev(I2CDev &&other) : _fileName{other._fileName},
@@ -38,7 +41,7 @@ I2CDev &I2CDev::operator=(I2CDev &&other) {
 }
 
 bool I2CDev::send8(uint8_t devAddr, uint8_t addr, const void *data, std::size_t size) noexcept {
-    if (!_set_slave_address(devAddr) && !_set_pointer8(addr) && !_write_data(data, size)) {
+    if (_set_slave_address(devAddr) && _set_pointer8(addr) && _write_data(data, size)) {
         return false;
     }
 
@@ -46,13 +49,13 @@ bool I2CDev::send8(uint8_t devAddr, uint8_t addr, const void *data, std::size_t 
 }
 
 bool I2CDev::send16(uint8_t devAddr, uint16_t addr, const void *data, std::size_t size) noexcept {
-    if (!_set_slave_address(devAddr) && !_set_pointer16(addr) && !_write_data(data, size)) {
+    if (_set_slave_address(devAddr) && _set_pointer16(addr) && _write_data(data, size)) {
         return false;
     }
 }
 
 std::unique_ptr<uint8_t> I2CDev::read8(uint8_t devAddr, uint8_t addr, std::size_t size) noexcept {
-    if (!_set_slave_address(devAddr) && !_set_pointer8(addr)) {
+    if (_set_slave_address(devAddr) && _set_pointer8(addr)) {
         return nullptr;
     }
 
@@ -66,7 +69,7 @@ std::unique_ptr<uint8_t> I2CDev::read8(uint8_t devAddr, uint8_t addr, std::size_
 }
 
 std::unique_ptr<uint8_t> I2CDev::read16(uint8_t devAddr, uint16_t addr, std::size_t size) noexcept {
-    if (!_set_slave_address(devAddr) && !_set_pointer16(addr)) {
+    if (_set_slave_address(devAddr) && _set_pointer16(addr)) {
         return nullptr;
     }
 
@@ -80,7 +83,7 @@ std::unique_ptr<uint8_t> I2CDev::read16(uint8_t devAddr, uint16_t addr, std::siz
 }
 
 bool I2CDev::read8(uint8_t devAddr, uint8_t addr, uint8_t *dataBuffer, std::size_t size) noexcept {
-    if (!_set_slave_address(devAddr) && !_set_pointer8(addr) && !_read_data(dataBuffer, size)) {
+    if (_set_slave_address(devAddr) && _set_pointer8(addr) && _read_data(dataBuffer, size)) {
         return false;
     }
     
@@ -88,7 +91,7 @@ bool I2CDev::read8(uint8_t devAddr, uint8_t addr, uint8_t *dataBuffer, std::size
 }
 
 bool I2CDev::read16(uint8_t devAddr, uint16_t addr, uint8_t *dataBuffer, std::size_t size) noexcept {
-    if (!_set_slave_address(devAddr) && !_set_pointer16(addr) && !_read_data(dataBuffer, size)) {
+    if (_set_slave_address(devAddr) && _set_pointer16(addr) && _read_data(dataBuffer, size)) {
         return false;
     }
 
@@ -112,6 +115,8 @@ bool I2CDev::_init_file() noexcept {
         LOG_WARN("Unable to open file: %s. Errno value is %d", _fileName.data(), errno);
         return false;
     }
+    LOG_INFO("File %s opened succesfully.", _fileName.data());
+    _sleep();
 }
 
 bool I2CDev::_set_slave_address(uint8_t devAddr) noexcept {
@@ -124,6 +129,8 @@ bool I2CDev::_set_slave_address(uint8_t devAddr) noexcept {
         return false;
     }
     _lastSlaveAddress = devAddr;
+    LOG_INFO("Slave address set %u succesfully.", devAddr);
+    _sleep();
     return true;
 }
 
@@ -132,6 +139,8 @@ bool I2CDev::_set_pointer8(uint8_t addr) noexcept {
         LOG_WARN("Unable to set pointer on slave addr: %d. Errno value is %d", _lastSlaveAddress, errno);
         return false;
     }
+    LOG_INFO("Pointer set succesfully.");
+    _sleep();
     return true;
 }
 
@@ -143,6 +152,7 @@ bool I2CDev::_set_pointer16(uint16_t addr) noexcept {
         LOG_WARN("Unable to set pointer on slave addr: %d. Errno value is %d", _lastSlaveAddress, errno);
         return false;
     }
+    _sleep();
     return true;
 }
 
@@ -157,6 +167,7 @@ bool I2CDev::_write_data(const void* data, std::size_t size) noexcept {
         return false;
     }
     LOG_INFO("Data sent successfully.");
+    _sleep();
     return true;
 }
 
@@ -171,5 +182,10 @@ bool I2CDev::_read_data(uint8_t* data, std::size_t size) noexcept {
         return false;
     }
     LOG_INFO("Data read successfully.");
+    _sleep();
     return true;
+}
+
+void I2CDev::_sleep() const noexcept {
+    std::this_thread::sleep_for(std::chrono::microseconds(20));
 }
