@@ -24,7 +24,7 @@ Download this repository in your project directory. Then please update your CMak
 
 ```cmake
 add_subdirectory(linux-dev-conn)
-target_link_libraries(MyFancTarget i2c::i2c)
+target_link_libraries(MyFancyTarget i2c::i2c)
 # target_link_libraries(MyFancTarget <inteded device>)
 ```
 
