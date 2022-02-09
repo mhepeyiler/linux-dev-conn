@@ -2,7 +2,7 @@
 #define LINUX_DEV_CONN_SRC_INCLUDE_COMM_DEVICE_H
 
 #include <memory>
-
+#include <string_view>
 
 /**
  * @brief Abstract class for connection devices. 
@@ -50,6 +50,13 @@ public:
      * @return If the read fails then it returns nullptr, otherwise data pointer.
      */
     virtual std::unique_ptr<uint8_t> read(uint16_t devAddress, uint16_t address, std::size_t dataSize) noexcept = 0;
+
+    /**
+     * @brief Set the file name of the connection
+     * 
+     * @param fileName file name to open
+     */
+    virtual void set_file(std::string_view fileName) noexcept = 0;
 };
 
 #endif
