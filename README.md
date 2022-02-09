@@ -6,7 +6,7 @@ A library to use in the development of a Linux-based board. It provides a C++ in
 
 Installation steps to use library in your project. As prerequistes, git and cmake must be installed in your system.
 
-```
+```bash
 $ mkdir build
 $ cd build
 # if you want to disable log then $ cmake .. -DLOG=0
@@ -22,7 +22,7 @@ Please check [example](example) folder.
 
 Download this repository in your project directory. Then please update your CMakeLists.txt as shown below.
 
-```
+```cmake
 add_subdirectory(linux-dev-conn)
 target_link_libraries(MyFancTarget i2c::i2c)
 # target_link_libraries(MyFancTarget <inteded device>)
